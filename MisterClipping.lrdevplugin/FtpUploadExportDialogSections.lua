@@ -14,26 +14,26 @@ FtpUploadExportDialogSections = {}
 
 -------------------------------------------------------------------------------
 
-local function updateExportStatus( propertyTable )	
+local function updateExportStatus(propertyTable)	
     local message = nil 
     repeat
         -- Use a repeat loop to allow easy way to "break" out.
         -- (It only goes through once.)
 
         if propertyTable.ftpPreset == nil then
-                message = LOC "$$$/FtpUpload/ExportDialog/Messages/SelectPreset=Select or Create an FTP preset"
-                break
+            message = LOC "$$$/FtpUpload/ExportDialog/Messages/SelectPreset=Select or Create an FTP preset"
+            break
         end
 
-        if propertyTable.putInSubfolder and ( propertyTable.path == "" or propertyTable.path == nil ) then
-                message = LOC "$$$/FtpUpload/ExportDialog/Messages/EnterSubPath=Enter a destination path"
-                break
+        if propertyTable.putInSubfolder and (propertyTable.path == "" or propertyTable.path == nil) then
+            message = LOC "$$$/FtpUpload/ExportDialog/Messages/EnterSubPath=Enter a destination path"
+            break
         end
 
         local fullPath = propertyTable.ftpPreset.path or ""
 
         if propertyTable.putInSubfolder then
-                fullPath = LrFtp.appendFtpPaths( fullPath, propertyTable.path )
+            fullPath = LrFtp.appendFtpPaths(fullPath, propertyTable.path)
         end
 
         propertyTable.fullPath = fullPath
@@ -55,18 +55,18 @@ end
 
 -------------------------------------------------------------------------------
 
-function FtpUploadExportDialogSections.startDialog( propertyTable )
-    propertyTable:addObserver( 'items', updateExportStatus )
-    propertyTable:addObserver( 'path', updateExportStatus )
-    propertyTable:addObserver( 'putInSubfolder', updateExportStatus )
-    propertyTable:addObserver( 'ftpPreset', updateExportStatus )
+function FtpUploadExportDialogSections.startDialog(propertyTable)
+    propertyTable:addObserver('items', updateExportStatus)
+    propertyTable:addObserver('path', updateExportStatus)
+    propertyTable:addObserver('putInSubfolder', updateExportStatus)
+    propertyTable:addObserver('ftpPreset', updateExportStatus)
 
-    updateExportStatus( propertyTable )
+    updateExportStatus(propertyTable)
 end
 
 -------------------------------------------------------------------------------
 
-function FtpUploadExportDialogSections.sectionsForBottomOfDialog( _, propertyTable )
+function FtpUploadExportDialogSections.sectionsForBottomOfDialog(_, propertyTable)
 
     local f = LrView.osFactory()
     local bind = LrView.bind
@@ -144,7 +144,5 @@ function FtpUploadExportDialogSections.sectionsForBottomOfDialog( _, propertyTab
             },
         },
     }
-
-    return result
-	
+    return result	
 end

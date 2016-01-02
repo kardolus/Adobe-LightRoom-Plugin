@@ -17,7 +17,7 @@ FtpUploadTask = {}
 
 --------------------------------------------------------------------------------
 
-function FtpUploadTask.processRenderedPhotos( functionContext, exportContext )
+function FtpUploadTask.processRenderedPhotos(functionContext, exportContext)
 
     -- Make a local reference to the export parameters.
 
@@ -29,16 +29,16 @@ function FtpUploadTask.processRenderedPhotos( functionContext, exportContext )
     local nPhotos = exportSession:countRenditions()
     local progressScope = exportContext:configureProgress {
         title = nPhotos > 1
-        and LOC( "$$$/FtpUpload/Upload/Progress=Uploading ^1 photos to MisterClipping", nPhotos )
+        and LOC("$$$/FtpUpload/Upload/Progress=Uploading ^1 photos to MisterClipping", nPhotos)
         or LOC "$$$/FtpUpload/Upload/Progress/One=Uploading one photo to MisterClipping",
     }
 
     -- Create an FTP connection.
-    if not LrFtp.queryForPasswordIfNeeded( ftpPreset ) then
+    if not LrFtp.queryForPasswordIfNeeded(ftpPreset) then
         return
     end
 
-    local ftpInstance = LrFtp.create( ftpPreset, true )
+    local ftpInstance = LrFtp.create(ftpPreset, true)
     if not ftpInstance then
         -- This really shouldn't ever happen.
         LrErrors.throwUserError( LOC "$$$/FtpUpload/Upload/Errors/InvalidFtpParameters=The specified FTP preset is incomplete and cannot be used." )
@@ -47,35 +47,34 @@ function FtpUploadTask.processRenderedPhotos( functionContext, exportContext )
     -- Ensure target directory exists.
     local index = 0
     while true do
-        local subPath = string.sub( exportParams.fullPath, 0, index )
+        local subPath = string.sub(exportParams.fullPath, 0, index)
         ftpInstance.path = subPath
 
-        local exists = ftpInstance:exists( '' )
+        local exists = ftpInstance:exists('')
 
         if exists == false then
-            local success = ftpInstance:makeDirectory( '' )
+            local success = ftpInstance:makeDirectory('')
 
             if not success then
                 -- This is a possible situation if permissions don't allow us to create directories.
-                LrErrors.throwUserError( LOC "$$$/FtpUpload/Upload/Errors/CannotMakeDirectoryForUpload=Cannot upload because Lightroom could not create the destination directory." )
+                LrErrors.throwUserError(LOC "$$$/FtpUpload/Upload/Errors/CannotMakeDirectoryForUpload=Cannot upload because Lightroom could not create the destination directory.")
             end
 
         elseif exists == 'file' then
             -- Unlikely, due to the ambiguous way paths for directories get tossed around.
-            LrErrors.throwUserError( LOC "$$$/FtpUpload/Upload/Errors/UploadDestinationIsAFile=Cannot upload to a destination that already exists as a file." )
+            LrErrors.throwUserError(LOC "$$$/FtpUpload/Upload/Errors/UploadDestinationIsAFile=Cannot upload to a destination that already exists as a file.")
         elseif exists == 'directory' then
             -- Excellent, it exists, do nothing here.
         else
             -- Not sure if this would every really happen.
-            LrErrors.throwUserError( LOC "$$$/FtpUpload/Upload/Errors/CannotCheckForDestination=Unable to upload because Lightroom cannot ascertain if the target destination exists." )
+            LrErrors.throwUserError(LOC "$$$/FtpUpload/Upload/Errors/CannotCheckForDestination=Unable to upload because Lightroom cannot ascertain if the target destination exists.")
         end
 
         if index == nil then
             break
         end
 
-        index = string.find( exportParams.fullPath, "/", index + 1 )
-
+        index = string.find(exportParams.fullPath, "/", index + 1)
     end
 
     ftpInstance.path = exportParams.fullPath
@@ -92,20 +91,20 @@ function FtpUploadTask.processRenderedPhotos( functionContext, exportContext )
         if progressScope:isCanceled() then break end
 
         if success then
-            local filename = LrPathUtils.leafName( pathOrMessage )
-            local success = ftpInstance:putFile( pathOrMessage, filename )
+            local filename = LrPathUtils.leafName(pathOrMessage)
+            local success = ftpInstance:putFile(pathOrMessage, filename)
 
             if not success then
                 -- If we can't upload that file, log it.  For example, maybe user has exceeded disk
                 -- quota, or the file already exists and we don't have permission to overwrite, or
                 -- we don't have permission to write to that directory, etc....
 
-                table.insert( failures, filename )
+                table.insert(failures, filename)
             end
 
             -- When done with photo, delete temp file. There is a cleanup step that happens later,
             -- but this will help manage space in the event of a large upload.
-            LrFileUtils.delete( pathOrMessage )
+            LrFileUtils.delete(pathOrMessage)
         end
     end
 
@@ -116,9 +115,9 @@ function FtpUploadTask.processRenderedPhotos( functionContext, exportContext )
         if #failures == 1 then
             message = LOC "$$$/FtpUpload/Upload/Errors/OneFileFailed=1 file failed to upload correctly."
         else
-            message = LOC ( "$$$/FtpUpload/Upload/Errors/SomeFileFailed=^1 files failed to upload correctly.", #failures )
+            message = LOC ("$$$/FtpUpload/Upload/Errors/SomeFileFailed=^1 files failed to upload correctly.", #failures)
         end
-        LrDialogs.message( message, table.concat( failures, "\n" ) )
+        LrDialogs.message(message, table.concat(failures, "\n"))
     end
 	
 end
