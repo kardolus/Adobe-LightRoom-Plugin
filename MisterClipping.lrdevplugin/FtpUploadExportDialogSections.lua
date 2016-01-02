@@ -1,5 +1,4 @@
 --[[----------------------------------------------------------------------------
-
 FtpUploadExportDialogSections.lua
 Export dialog customization for Lightroom MisterClipping uploader
 ------------------------------------------------------------------------------]]

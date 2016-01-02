@@ -1,8 +1,6 @@
 --[[----------------------------------------------------------------------------
-
 FtpUploadExportServiceProvider.lua
-Export service provider description for Lightroom FtpUpload uploader
-
+Export service provider description for the Lightroom MisterClipping Extension
 ------------------------------------------------------------------------------]]
 
 -- FtpUpload plug-in
