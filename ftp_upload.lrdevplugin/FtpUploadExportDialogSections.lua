@@ -16,7 +16,7 @@ FtpUploadExportDialogSections = {}
 
 local function updateExportStatus( propertyTable )
 	
-	local message = nil
+	local message = nil 
 	
 	repeat
 		-- Use a repeat loop to allow easy way to "break" out.
