@@ -9,5 +9,5 @@ return {
         file = 'FtpUploadServiceProvider.lua',
     },
 
-    VERSION = { major=1, minor=2, revision=1, build=2, },
+    VERSION = { major=1, minor=2, revision=5, build=2, },
 } 
