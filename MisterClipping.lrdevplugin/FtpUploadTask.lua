@@ -24,6 +24,7 @@ end
 --------------------------------------------------------------------------------
 
 function FtpUploadTask.processRenderedPhotos(functionContext, exportContext)
+    local logMessage
 
     -- Make a local reference to the export parameters.
     local exportSession = exportContext.exportSession
@@ -46,8 +47,9 @@ function FtpUploadTask.processRenderedPhotos(functionContext, exportContext)
     local ftpInstance = LrFtp.create(ftpPreset, true)
     if not ftpInstance then
         -- This really shouldn't ever happen.
-        FtpUploadTask.outputToLog("The specified FTP preset is incomplete and cannot be used.")
-        LrErrors.throwUserError( LOC "$$$/FtpUpload/Upload/Errors/InvalidFtpParameters=The specified FTP preset is incomplete and cannot be used." )
+        logMessage = "The specified FTP preset is incomplete and cannot be used."
+        FtpUploadTask.outputToLog(logMessage)
+        LrErrors.throwUserError( LOC "$$$/FtpUpload/Upload/Errors/InvalidFtpParameters=" .. logMessage)
     end
 
     -- Ensure target directory exists.
@@ -63,20 +65,23 @@ function FtpUploadTask.processRenderedPhotos(functionContext, exportContext)
 
             if not success then
                 -- This is a possible situation if permissions don't allow us to create directories.
-                FtpUploadTask.outputToLog("Cannot upload because Lightroom could not create the destination directory.")
-                LrErrors.throwUserError(LOC "$$$/FtpUpload/Upload/Errors/CannotMakeDirectoryForUpload=Cannot upload because Lightroom could not create the destination directory.")
+                logMessage = "Cannot upload because Lightroom could not create the destination directory."
+                FtpUploadTask.outputToLog(logMessage)
+                LrErrors.throwUserError(LOC "$$$/FtpUpload/Upload/Errors/CannotMakeDirectoryForUpload=" .. logMessage)
             end
 
         elseif exists == 'file' then
             -- Unlikely, due to the ambiguous way paths for directories get tossed around.
-            FtpUploadTask.outputToLog("Cannot upload to a destination that already exists as a file.")
-            LrErrors.throwUserError(LOC "$$$/FtpUpload/Upload/Errors/UploadDestinationIsAFile=Cannot upload to a destination that already exists as a file.")
+            logMessage = "Cannot upload to a destination that already exists as a file."
+            FtpUploadTask.outputToLog(logMessage)
+            LrErrors.throwUserError(LOC "$$$/FtpUpload/Upload/Errors/UploadDestinationIsAFile=" .. logMessage)
         elseif exists == 'directory' then
             -- Excellent, it exists, do nothing here.
         else
             -- Not sure if this would every really happen.
-            FtpUploadTask.outputToLog("Unable to upload because Lightroom cannot ascertain if the target destination exists.")
-            LrErrors.throwUserError(LOC "$$$/FtpUpload/Upload/Errors/CannotCheckForDestination=Unable to upload because Lightroom cannot ascertain if the target destination exists.")
+            logMessage = "Unable to upload because Lightroom cannot ascertain if the target destination exists."
+            FtpUploadTask.outputToLog(logMessage)
+            LrErrors.throwUserError(LOC "$$$/FtpUpload/Upload/Errors/CannotCheckForDestination=" .. logMessage)
         end
 
         if index == nil then
