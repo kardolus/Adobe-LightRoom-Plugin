@@ -16,11 +16,13 @@ local LrLogger = import 'LrLogger'
 FtpUploadTask = {}
 
 --------------------------------------------------------------------------------
+
 function FtpUploadTask.outputToLog(message)
     local log = LrLogger('MRC_LR_Log') -- the log file name 
-    log:enable( "logfile" )
+    log:enable("logfile")
     log:trace(message) 
 end
+
 --------------------------------------------------------------------------------
 
 function FtpUploadTask.processRenderedPhotos(functionContext, exportContext)
